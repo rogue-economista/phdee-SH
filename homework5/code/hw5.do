@@ -25,7 +25,7 @@ sum cohort treatment if treatment ==1
 //ssc install fetwowayweights
 
 count if !missing( energy, cohort, date, treatment )
-twowayfeweights energy id devicegroup treatment, type(feTR)	// export table!!!
+twowayfeweights energy id devicegroup treatment, type(feTR)
 
 
 // 3-run xtdidregress 
@@ -33,3 +33,26 @@ xtdidregress (energy temperature precipitation relativehumidity id) (treatment),
 
 
 save "raw\energy_staggered.dta", replace
+
+
+
+
+
+
+
+// 2-Daily data
+// collapse to daily data
+gen daily = dofc(date)
+format daily %td
+collapse energy temperature precipitation relativehumidity treatment cohort, by(daily)
+
+
+// 1-estimate 2wfe on the daily data and report on the ATT and clustered SE
+
+
+
+save "energy_staggered_daily.dta", replace
+
+
+
+
