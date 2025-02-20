@@ -44,12 +44,15 @@ save "raw\energy_staggered.dta", replace
 // collapse to daily data
 gen daily = dofc(date)
 format daily %td
-collapse energy temperature precipitation relativehumidity treatment cohort, by(daily)
+collapse energy temperature precipitation relativehumidity treatment cohort zip id, by(daily)
 
 
 // 1-estimate 2wfe on the daily data and report on the ATT and clustered SE
 
 
+
+// estimate the event-study regression
+reghdfe energy temperature precipitation relativehumidity, absorb(id daily) group(cohort) vce(cluster zip)
 
 save "energy_staggered_daily.dta", replace
 
